@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - AyurSutra</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login to AyurSutra</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <select id="role">
+        <option value="Admin">Admin</option>
+        <option value="Doctor">Doctor</option>
+        <option value="Receptionist">Receptionist</option>
+      </select>
+      <button type="submit" class="btn">Login</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", e=>{
+      e.preventDefault();
+      const user=document.getElementById("username").value;
+      const pass=document.getElementById("password").value;
+      if(user==="admin" && pass==="1234"){
+        localStorage.setItem("loggedIn","true");
+        window.location.href="dashboard.html";
+      } else {
+        alert("Invalid credentials (use admin / 1234)");
+      }
+    });
+  </script>
+</body>
+</html>

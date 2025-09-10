@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AyurSutra</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>AyurSutra</h2>
+    <button class="menu-btn active" data-target="patients">Patients</button>
+    <button class="menu-btn" data-target="appointments">Appointments</button>
+    <button class="menu-btn" data-target="therapies">Therapies</button>
+    <button class="menu-btn" data-target="billing">Billing</button>
+    <button class="menu-btn" data-target="analytics">Analytics</button>
+    <button id="logoutBtn" class="btn danger">Logout</button>
+  </div>
+  <div class="main">
+    <div class="summary">
+      <div id="summaryPatients">Patients: 0</div>
+      <div id="summaryAppointments">Appointments: 0</div>
+      <div id="summaryTherapies">Therapies: 0</div>
+      <div id="summaryRevenue">Revenue: ₹0</div>
+    </div>
+    <div id="patients" class="panel active"></div>
+    <div id="appointments" class="panel"></div>
+    <div id="therapies" class="panel"></div>
+    <div id="billing" class="panel"></div>
+    <div id="analytics" class="panel"></div>
+  </div>
+  <script src="dashboard.js"></script>
+</body>
+</html>
