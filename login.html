@@ -1,37 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - AyurSutra</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — AyurSutra</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body>
-  <div class="login-container">
-    <h2>Login to AyurSutra</h2>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <select id="role">
-        <option value="Admin">Admin</option>
-        <option value="Doctor">Doctor</option>
-        <option value="Receptionist">Receptionist</option>
-      </select>
-      <button type="submit" class="btn">Login</button>
-    </form>
-  </div>
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", e=>{
-      e.preventDefault();
-      const user=document.getElementById("username").value;
-      const pass=document.getElementById("password").value;
-      if(user==="admin" && pass==="1234"){
-        localStorage.setItem("loggedIn","true");
-        window.location.href="dashboard.html";
-      } else {
-        alert("Invalid credentials (use admin / 1234)");
-      }
-    });
-  </script>
+<body class="page-body">
+  <!-- Theme toggle (top-right) -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+
+  <nav class="topbar">
+    <div class="brand"><span class="leaf">🌿</span> AyurSutra</div>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="index.html">Home</a>
+    </div>
+  </nav>
+
+  <main class="auth-wrap">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p class="muted">Demo account: <b>admin / 1234</b> (role: admin)</p>
+
+      <form id="loginForm" class="form-stack">
+        <input id="username" name="username" placeholder="Username" required />
+        <input id="password" name="password" type="password" placeholder="Password" required />
+        <select id="role" name="role" aria-label="role">
+          <option value="admin">Admin</option>
+          <option value="doctor">Doctor</option>
+          <option value="receptionist">Receptionist</option>
+        </select>
+
+        <div style="display:flex;gap:8px;justify-content:center">
+          <button class="btn btn-primary" type="submit">Sign in</button>
+          <button id="demoRegister" class="btn btn-outline" type="button">Create demo user</button>
+        </div>
+      </form>
+      <p class="muted small">Demo users are stored locally in your browser.</p>
+    </div>
+  </main>
+
+<script>
+// Theme toggle (same as index)
+(function(){
+  const btn = document.getElementById('theme-toggle');
+  const apply = (t)=>{
+    if(t === 'dark'){ document.body.classList.add('dark'); btn.textContent = '☀️'; }
+    else { document.body.classList.remove('dark'); btn.textContent = '🌙'; }
+  };
+  const saved = localStorage.getItem('theme') || 'light';
+  apply(saved);
+  btn.addEventListener('click',()=>{
+    const now = document.body.classList.toggle('dark') ? 'dark' : 'light';
+    localStorage.setItem('theme', now);
+    apply(now);
+  });
+})();
+
+// Login & demo register (same behaviour as before)
+(() => {
+  const USERS_KEY='ayursutra_users_v1';
+  function getUsers(){ return JSON.parse(localStorage.getItem(USERS_KEY)||'[]'); }
+  function saveUsers(u){ localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+  if(!getUsers().find(x=>x.username==='admin')) {
+    const u=getUsers(); u.push({id:Date.now(), username:'admin', password:'1234', role:'admin', name:'Admin'}); saveUsers(u);
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const role = document.getElementById('role').value;
+    const u = getUsers().find(x=>x.username===user && x.password===pass && x.role===role);
+    if(u){
+      localStorage.setItem('ayursutra_session', JSON.stringify({id:u.id, username:u.username, role:u.role, name:u.name}));
+      location.href='dashboard.html';
+    } else {
+      alert('Invalid credentials or role. Use admin/1234 or create demo user.');
+    }
+  });
+
+  document.getElementById('demoRegister').addEventListener('click', ()=>{
+    const name = prompt('Name for demo user', 'Reception') || 'Demo';
+    const username = prompt('Username (unique)', 'demo'+Date.now()%1000) || ('demo'+Date.now()%1000);
+    const password = prompt('Password', 'demo') || 'demo';
+    const role = prompt('Role (admin/doctor/receptionist)', 'receptionist') || 'receptionist';
+    const users = getUsers();
+    if(users.find(x=>x.username===username)){ return alert('Username exists'); }
+    users.push({id:Date.now(), username, password, role, name});
+    saveUsers(users);
+    alert('Demo user created. Login with those credentials.');
+  });
+})();
+</script>
 </body>
 </html>
+
